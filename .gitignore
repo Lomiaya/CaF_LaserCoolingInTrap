@@ -1,2 +1,3 @@
-results/
+results/*.jl
+results/*.txt
 previous_version/
