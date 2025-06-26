@@ -3,7 +3,7 @@
 energies = energy.(states) .* (2π / Γ)
 
 # DEFINE FREQUENCIES #
-detuning = +18.0
+detuning = +32.0
 # detuning = +40.0
 # detuning = +32.0
 δ1 = +0.00 # F = 1-

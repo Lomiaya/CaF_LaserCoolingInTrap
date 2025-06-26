@@ -17,9 +17,10 @@ using Printf
 
 # xpoints = [0.6, 0.8, 1.0] # in mW
 # ypoints = [0.3, 0.4, 0.5] # in mW
-xpoints = [0.1, 0.3, 0.5, 0.7, 0.9]
+xpoints = [0.2, 0.6, 1.0]
 # ypoints = [0.05, 0.15, 0.25, 0.35, 0.45]
-ypoints = [0.1, 0.15, 0.2]
+# ypoints = [0.15, 0.3, 0.45, 0.6, 0.75]
+ypoints = [0.1, 0.2, 0.25]
 
 points = [(i, j) for i in xpoints, j in ypoints]
 
@@ -34,46 +35,49 @@ for element in points
     n_times = 10
 
     n_trajectories_diffusion = 50000 # # of particles ran for the diffusion.
-    diffusion_t_end = 0e-6 # first 10us: reach equilibrium.
-    diffusion_τ_total = 6e-6 # and then averaging through 10us evolution.
+    diffusion_t_end = 0e-6
+    diffusion_τ_total = 6e-6
 
-    (sols_no_diffusion, sols_with_diffusion, diffusion, diffusion_error, diffusion_over_time) = 
-        compute_trajectories_with_diffusion(
-        prob, prob_func!, prob, prob_func_diffusion!, n_trajectories1, n_trajectories2, n_trajectories_diffusion, n_times, diffusion_t_end, diffusion_τ_total
-    )
-    
-    Ts = T_vs_time(sols_with_diffusion)
-    display(Ts[end] .* 1e6)
-    xs_dfshb, ys_dfshb = survival_rate_curve(sols_with_diffusion)
-    display(ys_dfshb[end])
-    display(sols_with_diffusion[10].prob.p.n_scatters / (-log(ys_dfshb[end])))
+    try
+        (sols_no_diffusion, sols_with_diffusion, diffusion, diffusion_error, diffusion_over_time) = 
+            compute_trajectories_with_diffusion(
+            prob, prob_func!, prob, prob_func_diffusion!, n_trajectories1, n_trajectories2, n_trajectories_diffusion, n_times, diffusion_t_end, diffusion_τ_total
+        )
+        Ts = T_vs_time(sols_with_diffusion)
+        display(Ts[end] .* 1e6)
+        xs_dfshb, ys_dfshb = survival_rate_curve(sols_with_diffusion)
+        display(ys_dfshb[end])
+        display(sols_with_diffusion[10].prob.p.n_scatters / (-log(ys_dfshb[end])))
 
-    filename = @sprintf("results/cooling_sim_d%.2fd%.2fd%.2fb%.2fs%.2fs%.2ft%.2f.jl",
-                        detuning,
-                        δ1,
-                        δ2,
-                        beam_radius / 1e-3,
-                        s1 / total_sat,
-                        s2 / total_sat,
-                        Temperature_initial / 1e-6)
-    serialize(filename, sols_with_diffusion)
+        filename = @sprintf("results/cooling_sim_d%.2fd%.2fd%.2fb%.2fs%.2fs%.2ft%.2f.jl",
+                            detuning,
+                            δ1,
+                            δ2,
+                            beam_radius / 1e-3,
+                            s1 / total_sat,
+                            s2 / total_sat,
+                            Temperature_initial / 1e-6)
+        serialize(filename, sols_with_diffusion)
 
-    open("results/output.txt", "a") do io
-        println(io, "$filename")
-        var_name = "Temperature (μK)"
-        formatted_value = @sprintf("%.3g", Ts[end] .* 1e6)
-        println(io, "$var_name: $formatted_value")
-        var_name = "Scattering rate (count, 3ms)"
-        formatted_value = @sprintf("%.3g", sols_with_diffusion[10].prob.p.n_scatters)
-        println(io, "$var_name: $formatted_value")
-        var_name = "p_survival (count)"
-        formatted_value = @sprintf("%.3g", ys_dfshb[end])
-        println(io, "$var_name: $formatted_value")
-        var_name = "Scattering rate over log p_survival (count)"
-        formatted_value = @sprintf("%.3g", sols_with_diffusion[10].prob.p.n_scatters / (-log(ys_dfshb[end])))
-        println(io, "$var_name: $formatted_value")
-        var_name = "Diffusion constant (e-3)"
-        formatted_value = @sprintf("%.3g", diffusion / 1e-3)
-        println(io, "$var_name: $formatted_value")
+        open("results/output.txt", "a") do io
+            println(io, "$filename")
+            var_name = "Temperature (μK)"
+            formatted_value = @sprintf("%.3g", Ts[end] .* 1e6)
+            println(io, "$var_name: $formatted_value")
+            var_name = "Scattering rate (count, 3ms)"
+            formatted_value = @sprintf("%.3g", sols_with_diffusion[10].prob.p.n_scatters)
+            println(io, "$var_name: $formatted_value")
+            var_name = "p_survival (count)"
+            formatted_value = @sprintf("%.3g", ys_dfshb[end])
+            println(io, "$var_name: $formatted_value")
+            var_name = "Scattering rate over log p_survival (count)"
+            formatted_value = @sprintf("%.3g", sols_with_diffusion[10].prob.p.n_scatters / (-log(ys_dfshb[end])))
+            println(io, "$var_name: $formatted_value")
+            var_name = "Diffusion constant (e-3)"
+            formatted_value = @sprintf("%.3g", diffusion / 1e-3)
+            println(io, "$var_name: $formatted_value")
+        end
+    catch
+        continue
     end
 end

@@ -20,7 +20,7 @@ p = initialize_prob(sim_type, energies, freqs, sats, pols, beam_radius, d, m/(ħ
     return nothing
 end
 
-diffusion_times = (0:1e-7:t_end) ./ (1/Γ)
+diffusion_times = (0:1e-6:t_end) ./ (1/Γ)
 cb_diffusion = PresetTimeCallback(diffusion_times, diffusion_kick, save_positions=(false,false))
 cb1 = DiscreteCallback(condition_discrete, stochastic_collapse_nokick!, save_positions=(false,false))
 cb2 = DiscreteCallback(terminate_condition, terminate!)

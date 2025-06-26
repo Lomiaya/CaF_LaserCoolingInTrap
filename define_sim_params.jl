@@ -11,15 +11,19 @@ sim_type = Float64
 
 Temperature_initial = 70e-6
 
-σx_initial = 0.1e-6
-σy_initial = 0.1e-6
-σz_initial = 0.5e-6
+# σx_initial = 0.1e-6
+# σy_initial = 0.1e-6
+# σz_initial = 0.5e-6
+σx_initial = 0.
+σy_initial = 0.
+σz_initial = 0.
 Tx_initial = Temperature_initial
 Ty_initial = Temperature_initial
 Tz_initial = Temperature_initial
 
 @everywhere begin
     waist = 1e-6
+    # Pwr = 20e-3
     Pwr = 20e-3
     lambda = 776e-9
     I0_trap = 2Pwr / (π * waist^2)
@@ -47,6 +51,8 @@ end
 
 using Serialization
 H_ODT_matrix = deserialize("H_tweezer_matrix.jl") * 2π / (2 * ε0 * c) # in unit of s^-1
+display(H_ODT_matrix[1,1] * Is(0, 0, 0, Pwr, waist, lambda) * ħ / kB)
+display(H_ODT_matrix[end, end] * Is(0, 0, 0, Pwr, waist, lambda) * ħ / kB)
 
 import MutableNamedTuples: MutableNamedTuple
 sim_params = MutableNamedTuple(
@@ -66,5 +72,5 @@ sim_params = MutableNamedTuple(
 
     f_z = StructArray(zeros(Complex{sim_type}, 16, 16)),
 
-    dt_diffusion = 1e-7 / (1/Γ)
+    dt_diffusion = 1e-6 / (1/Γ)
 )

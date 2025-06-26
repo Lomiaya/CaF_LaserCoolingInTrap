@@ -294,7 +294,7 @@ end
 
 import StatsBase: mean
 using Bootstrap
-function distributed_compute_diffusion(prob, prob_func, n_trajectories, t_end, τ_total, n_times, scan_func, scan_values)
+function distributed_compute_diffusion(prob, prob_func, n_trajectories, t_end, τ_total, n_times, scan_func, scan_values, coord_idx=3)
     
     diffusions = zeros(length(scan_values))
     diffusion_errors = zeros(length(scan_values))
@@ -316,7 +316,7 @@ function distributed_compute_diffusion(prob, prob_func, n_trajectories, t_end, �
                 for pid ∈ workers()
                     future = @spawnat pid begin
                         scan_func(prob, scan_value)
-                        compute_diffusion(prob, prob_func, n_trajectories, t_end, τ_total, n_times, channel)
+                        compute_diffusion(prob, prob_func, n_trajectories, t_end, τ_total, n_times, channel, coord_idx)
                     end
                     push!(futures, future)
                 end
