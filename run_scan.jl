@@ -17,10 +17,10 @@ using Printf
 
 # xpoints = [0.6, 0.8, 1.0] # in mW
 # ypoints = [0.3, 0.4, 0.5] # in mW
-xpoints = [0.2, 0.6, 1.0]
+xpoints = [0.2, 0.4, 0.7, 1.0, 2.0, 4.0, 7.0, 10.0]
 # ypoints = [0.05, 0.15, 0.25, 0.35, 0.45]
 # ypoints = [0.15, 0.3, 0.45, 0.6, 0.75]
-ypoints = [0.1, 0.2, 0.25]
+ypoints = [0.00]
 
 points = [(i, j) for i in xpoints, j in ypoints]
 
@@ -32,11 +32,11 @@ for element in points
 
     n_trajectories1 = 50
     n_trajectories2 = 50
-    n_times = 10
+    n_times = 1000
 
     n_trajectories_diffusion = 50000 # # of particles ran for the diffusion.
     diffusion_t_end = 0e-6
-    diffusion_τ_total = 6e-6
+    diffusion_τ_total = 2e-7
 
     try
         (sols_no_diffusion, sols_with_diffusion, diffusion, diffusion_error, diffusion_over_time) = 

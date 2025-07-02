@@ -3,8 +3,8 @@
 energies = energy.(states) .* (2π / Γ)
 
 # DEFINE FREQUENCIES #
-detuning = +32.0
-# detuning = +40.0
+# detuning = +18.0
+detuning = +55.0
 # detuning = +32.0
 δ1 = +0.00 # F = 1-
 δ2 = +0.00 # F = 2
@@ -26,8 +26,8 @@ P = 1e-3
 I = 2P / (π * beam_radius^2)
 
 total_sat = I / Isat
-s1 = 0.7total_sat # F = 1-, in mW
-s2 = 0.35total_sat # F = 2, in mW
+s1 = 8.0total_sat # F = 1-, in mW
+s2 = 0.0total_sat # F = 2, in mW
 # s1 + s2 = I
 
 sats = [s1, s2]

@@ -47,13 +47,13 @@ function compute_trajectories_with_diffusion(
     scan_values_with_σ_and_T = zip(scan_values, zip(σxs, σys, σzs, Txs, Tys, Tzs))
     
     (diffusions, diffusion_errors, diffusions_over_time) = distributed_compute_diffusion(
-        prob_diffusion, prob_func_diffusion, n_trajectories_diffusion, diffusion_t_end, diffusion_τ_total, n_times, scan_func_with_initial_conditions!(scan_func), scan_values_with_σ_and_T, 3
+        prob_diffusion, prob_func_diffusion, n_trajectories_diffusion, diffusion_t_end, diffusion_τ_total, n_times, scan_func_with_initial_conditions!(scan_func), scan_values_with_σ_and_T, 1
         )
 
     # 3)
     prob.p.add_spontaneous_decay_kick = false
 
-    scan_values_with_diffusion = zip(scan_values, diffusions)
+    scan_values_with_diffusion = zip(scan_values, diffusions / 2)
     all_sols_with_diffusion = distributed_solve(n_trajectories2, prob, prob_func, scan_func_with_diffusion!(scan_func), scan_values_with_diffusion)
     
     # # Sometimes one would want two or more iterations:
