@@ -3,6 +3,11 @@ using Distributed
 # if nprocs() <= procs_to_use
 #     addprocs(procs_to_use-nprocs())
 # end
+
+using Pkg
+Pkg.activate(@__DIR__)
+Pkg.instantiate()  # uses local Manifest.toml, no internet
+
 @everywhere using QuantumStates, OpticalBlochEquations, DifferentialEquations, UnitsToValue, StructArrays, StaticArrays, Parameters
 @everywhere import Distributions: Normal, Geometric, Exponential
 @everywhere using ProgressMeter, Plots
